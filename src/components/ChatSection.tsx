@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sendChatMessage } from "@/utils/api";
 import { toast } from "sonner";
-import { Send } from "lucide-react";
+import { Send, PaperclipIcon, Sparkles, XCircle } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 
 interface ChatSectionProps {
@@ -20,12 +20,19 @@ interface Message {
   content: string;
   role: "user" | "assistant";
   timestamp: Date;
+  attachment?: {
+    type: string;
+    url: string;
+    name: string;
+  };
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
   // Auto-scroll to the bottom when messages change
@@ -41,18 +48,31 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!input.trim() || isLoading) return;
+    if ((!input.trim() && !attachment) || isLoading) return;
+    
+    // Create attachment data if there's an attachment
+    let attachmentData = undefined;
+    if (attachment) {
+      const url = URL.createObjectURL(attachment);
+      attachmentData = {
+        type: attachment.type,
+        url,
+        name: attachment.name
+      };
+    }
     
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: input,
+      content: input.trim(),
       role: "user",
-      timestamp: new Date()
+      timestamp: new Date(),
+      attachment: attachmentData
     };
     
     setMessages(prev => [...prev, userMessage]);
     setInput("");
+    setAttachment(null);
     setIsLoading(true);
     
     try {
@@ -86,35 +106,86 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     }
   };
 
+  const handleAttachmentClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setAttachment(files[0]);
+      toast.success(`File "${files[0].name}" ready to send`);
+    }
+  };
+
+  const removeAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className={cn("space-y-6", className)}>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="animate-fade-in">AI</Badge>
-          <h2 className="text-2xl font-medium tracking-tight">Chat Assistant</h2>
+          <Badge variant="outline" className="animate-pulse bg-primary/10 text-primary">AI</Badge>
+          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Chat Assistant</h2>
         </div>
         <p className="text-muted-foreground text-sm">
           Ask questions or discuss any topic with the AI assistant
         </p>
       </div>
       
-      <Card className="overflow-hidden animate-fade-in shadow-soft">
+      <Card className="overflow-hidden animate-fade-in shadow-soft border border-primary/20 backdrop-blur-sm bg-card/80">
         <CardContent className="p-0">
-          <div className="h-[500px] flex flex-col">
+          <div className="h-[65vh] flex flex-col">
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
               {messages.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-muted-foreground text-sm p-4">
-                  Start a conversation by sending a message
+                <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-4 space-y-3">
+                  <Sparkles className="h-12 w-12 text-primary opacity-50 animate-pulse" />
+                  <p className="text-center max-w-md">
+                    Start a conversation by sending a message or ask for help with a specific topic
+                  </p>
+                  <div className="flex flex-wrap gap-2 justify-center mt-4">
+                    {["How does Chota Got work?", "Tell me a joke", "What can you help me with?"].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        className="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-2 rounded-full text-sm transition-colors"
+                        onClick={() => {
+                          setInput(suggestion);
+                        }}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {messages.map((message) => (
-                    <ChatMessage
-                      key={message.id}
-                      message={message.content}
-                      role={message.role}
-                      timestamp={message.timestamp}
-                    />
+                    <div key={message.id}>
+                      <ChatMessage
+                        message={message.content}
+                        role={message.role}
+                        timestamp={message.timestamp}
+                      />
+                      {message.attachment && (
+                        <div className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} mt-1`}>
+                          <div className={`rounded-xl px-4 py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"} max-w-xs md:max-w-md`}>
+                            <a 
+                              href={message.attachment.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 text-sm underline underline-offset-2"
+                            >
+                              <PaperclipIcon className="h-4 w-4" />
+                              {message.attachment.name}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   ))}
                   
                   {isLoading && (
@@ -131,7 +202,23 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
               )}
             </ScrollArea>
             
-            <div className="border-t p-4 bg-muted/30">
+            <div className="border-t p-4 bg-muted/30 backdrop-blur-sm">
+              {attachment && (
+                <div className="mb-2 p-2 bg-primary/10 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm">
+                    <PaperclipIcon className="h-4 w-4 text-primary" />
+                    <span className="truncate max-w-[200px]">{attachment.name}</span>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 w-6 p-0" 
+                    onClick={removeAttachment}
+                  >
+                    <XCircle className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
               <form onSubmit={handleSubmit} className="flex gap-2">
                 <Input
                   type="text"
@@ -139,11 +226,28 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
-                  className="focus-ring"
+                  className="focus-ring shadow-sm border-primary/20"
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                  onClick={handleAttachmentClick}
+                  disabled={isLoading}
+                >
+                  <PaperclipIcon className="h-4 w-4" />
+                  <span className="sr-only">Attach file</span>
+                </Button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*,.pdf,.doc,.docx,.txt"
                 />
                 <Button 
                   type="submit" 
-                  disabled={isLoading || !input.trim()}
+                  disabled={isLoading || (!input.trim() && !attachment)}
                   className="transition-all duration-200 hover:shadow-md"
                 >
                   <Send className="h-4 w-4" />
