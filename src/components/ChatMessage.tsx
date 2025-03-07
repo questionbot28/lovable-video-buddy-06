@@ -42,8 +42,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           className={cn(
             "rounded-2xl px-4 py-3 shadow-soft",
             isUser 
-              ? "bg-primary text-primary-foreground" 
-              : "bg-accent text-accent-foreground"
+              ? "bg-primary/90 text-primary-foreground" 
+              : "bg-accent/80 text-accent-foreground"
           )}
         >
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{message}</p>
@@ -55,7 +55,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       
       {isUser && (
         <Avatar className="h-8 w-8 flex-shrink-0">
-          <AvatarFallback className="bg-primary text-primary-foreground text-xs">You</AvatarFallback>
+          <AvatarFallback className="bg-primary/90 text-primary-foreground text-xs">You</AvatarFallback>
         </Avatar>
       )}
     </div>

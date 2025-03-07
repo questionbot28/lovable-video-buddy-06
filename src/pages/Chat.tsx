@@ -9,11 +9,11 @@ const Chat: React.FC = () => {
       <div className="animated-bg absolute inset-0 z-[-1]"></div>
       <Header />
       
-      <main className="flex-1 container mx-auto px-4 pb-16 mt-6">
+      <main className="flex-1 container max-w-7xl mx-auto px-4 pb-16 mt-6">
         <ChatSection className="animate-slide-up" />
       </main>
       
-      <footer className="py-6 px-4 border-t border-border/50 backdrop-blur-sm bg-background/20">
+      <footer className="py-6 px-4 border-t border-border/30 backdrop-blur-sm bg-background/20">
         <div className="container mx-auto text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Chota Got. All rights reserved.</p>
         </div>

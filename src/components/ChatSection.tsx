@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -35,7 +34,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
-  // Auto-scroll to the bottom when messages change
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -50,7 +48,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     
     if ((!input.trim() && !attachment) || isLoading) return;
     
-    // Create attachment data if there's an attachment
     let attachmentData = undefined;
     if (attachment) {
       const url = URL.createObjectURL(attachment);
@@ -61,7 +58,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
       };
     }
     
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input.trim(),
@@ -76,10 +72,8 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     setIsLoading(true);
     
     try {
-      // Send message to OpenRouter API
       const response = await sendChatMessage(input);
       
-      // Add AI response
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: response.trim(),
@@ -92,7 +86,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
       console.error("Error sending message:", error);
       toast.error("Failed to get response from AI");
       
-      // Add error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: "I'm having trouble responding right now. Please try again later.",
@@ -129,21 +122,21 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     <div className={cn("space-y-6", className)}>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="animate-pulse bg-primary/10 text-primary">AI</Badge>
-          <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Chat Assistant</h2>
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">AI</Badge>
+          <h2 className="text-3xl font-bold tracking-tight">Chat Assistant</h2>
         </div>
         <p className="text-muted-foreground text-sm">
           Ask questions or discuss any topic with the AI assistant
         </p>
       </div>
       
-      <Card className="overflow-hidden animate-fade-in shadow-soft border border-primary/20 backdrop-blur-sm bg-card/80">
+      <Card className="overflow-hidden shadow-soft border border-primary/10 backdrop-blur-sm bg-card/90">
         <CardContent className="p-0">
-          <div className="h-[65vh] flex flex-col">
+          <div className="h-[70vh] flex flex-col">
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-4 space-y-3">
-                  <Sparkles className="h-12 w-12 text-primary opacity-50 animate-pulse" />
+                  <Sparkles className="h-12 w-12 text-primary opacity-30" />
                   <p className="text-center max-w-md">
                     Start a conversation by sending a message or ask for help with a specific topic
                   </p>
@@ -193,7 +186,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
                       <div className="h-8 w-8 flex-shrink-0 flex items-center justify-center">
                         <div className="h-6 w-6 rounded-full bg-primary/10 animate-pulse"></div>
                       </div>
-                      <div className="rounded-2xl bg-accent px-4 py-3 text-accent-foreground max-w-[80%]">
+                      <div className="rounded-2xl bg-accent/80 px-4 py-3 text-accent-foreground max-w-[80%]">
                         <p className="text-sm animate-pulse-light">Thinking<span className="loading-dots"></span></p>
                       </div>
                     </div>
@@ -202,9 +195,9 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
               )}
             </ScrollArea>
             
-            <div className="border-t p-4 bg-muted/30 backdrop-blur-sm">
+            <div className="border-t border-border/20 p-4 bg-muted/10 backdrop-blur-sm">
               {attachment && (
-                <div className="mb-2 p-2 bg-primary/10 rounded-lg flex items-center justify-between">
+                <div className="mb-2 p-2 bg-primary/5 rounded-lg flex items-center justify-between border border-primary/10">
                   <div className="flex items-center gap-2 text-sm">
                     <PaperclipIcon className="h-4 w-4 text-primary" />
                     <span className="truncate max-w-[200px]">{attachment.name}</span>
@@ -226,12 +219,12 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
-                  className="focus-ring shadow-sm border-primary/20"
+                  className="focus-ring shadow-sm border-primary/10"
                 />
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                  className="transition-all duration-200 hover:shadow-md hover:border-primary/30"
                   onClick={handleAttachmentClick}
                   disabled={isLoading}
                 >
