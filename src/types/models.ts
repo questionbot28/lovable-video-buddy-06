@@ -9,20 +9,6 @@ export interface AIModel {
 
 export const availableModels: AIModel[] = [
   {
-    id: "deepseek",
-    name: "DeepSeek",
-    description: "Generates human-like responses to a wide range of queries",
-    apiKey: "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",
-    modelId: "deepseek-ai/deepseek-chat"
-  },
-  {
-    id: "qwen",
-    name: "Qwen",
-    description: "A powerful and versatile AI model for conversational tasks",
-    apiKey: "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",
-    modelId: "alibaba/qwen-72b-chat"
-  },
-  {
     id: "gemini",
     name: "Google Gemini",
     description: "Process and analyze both text and images",

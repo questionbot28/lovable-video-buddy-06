@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sendChatMessage } from "@/utils/api";
 import { toast } from "sonner";
-import { Send, PaperclipIcon, Sparkles, XCircle } from "lucide-react";
+import { Send, PaperclipIcon, Sparkles, XCircle, FileText } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import ModelSelector from "./ModelSelector";
 import { AIModel, availableModels } from "@/types/models";
@@ -34,7 +34,8 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [attachment, setAttachment] = useState<File | null>(null);
-  const [selectedModel, setSelectedModel] = useState<AIModel>(availableModels[3]); // Default to Mistral
+  const [selectedModel, setSelectedModel] = useState<AIModel>(availableModels.find(m => m.id === "gemini") || availableModels[0]);
+  const [isProcessingOcr, setIsProcessingOcr] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
@@ -60,6 +61,12 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
         url,
         name: attachment.name
       };
+      
+      // Show OCR processing indicator for images with Gemini
+      if (attachment.type.startsWith('image/') && selectedModel.id === 'gemini') {
+        setIsProcessingOcr(true);
+        toast.info("Processing image with OCR before sending...");
+      }
     }
     
     const userMessage: Message = {
@@ -76,10 +83,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     setIsLoading(true);
     
     try {
-      // Log the model being used
-      console.log(`Using model: ${selectedModel.name} (${selectedModel.id})`);
-      
-      const response = await sendChatMessage(input, selectedModel);
+      const response = await sendChatMessage(input, selectedModel, attachment);
       
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -103,6 +107,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      setIsProcessingOcr(false);
     }
   };
 
@@ -113,8 +118,15 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      setAttachment(files[0]);
-      toast.success(`File "${files[0].name}" ready to send`);
+      const file = files[0];
+      setAttachment(file);
+      
+      // Show notification about OCR for images when using Gemini
+      if (file.type.startsWith('image/') && selectedModel.id === 'gemini') {
+        toast.success(`Image "${file.name}" will be processed with OCR before sending to Gemini`);
+      } else {
+        toast.success(`File "${file.name}" ready to send`);
+      }
     }
   };
 
@@ -128,6 +140,11 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const handleModelChange = (model: AIModel) => {
     setSelectedModel(model);
     toast.success(`Switched to ${model.name} model`);
+    
+    // If there's an image attachment and we just switched to Gemini, show OCR info
+    if (attachment && attachment.type.startsWith('image/') && model.id === 'gemini') {
+      toast.info("Images sent with Gemini will be processed with OCR");
+    }
   };
 
   return (
@@ -188,8 +205,17 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
                               rel="noopener noreferrer"
                               className="flex items-center gap-2 text-sm underline underline-offset-2"
                             >
-                              <PaperclipIcon className="h-4 w-4" />
-                              {message.attachment.name}
+                              {message.attachment.type.startsWith('image/') ? (
+                                <>
+                                  <PaperclipIcon className="h-4 w-4" />
+                                  {message.attachment.name}
+                                </>
+                              ) : (
+                                <>
+                                  <FileText className="h-4 w-4" />
+                                  {message.attachment.name}
+                                </>
+                              )}
                             </a>
                           </div>
                         </div>
@@ -203,7 +229,10 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
                         <div className="h-6 w-6 rounded-full bg-primary/10 animate-pulse"></div>
                       </div>
                       <div className="rounded-2xl bg-accent/80 px-4 py-3 text-accent-foreground max-w-[80%]">
-                        <p className="text-sm animate-pulse-light">Thinking<span className="loading-dots"></span></p>
+                        <p className="text-sm animate-pulse-light">
+                          {isProcessingOcr ? "Processing image with OCR" : "Thinking"}
+                          <span className="loading-dots"></span>
+                        </p>
                       </div>
                     </div>
                   )}
@@ -215,8 +244,22 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
               {attachment && (
                 <div className="mb-2 p-2 bg-primary/5 rounded-lg flex items-center justify-between border border-primary/10">
                   <div className="flex items-center gap-2 text-sm">
-                    <PaperclipIcon className="h-4 w-4 text-primary" />
-                    <span className="truncate max-w-[200px]">{attachment.name}</span>
+                    {attachment.type.startsWith('image/') ? (
+                      <>
+                        <PaperclipIcon className="h-4 w-4 text-primary" />
+                        <span className="truncate max-w-[200px]">{attachment.name}</span>
+                        {selectedModel.id === 'gemini' && (
+                          <Badge variant="outline" className="ml-2 bg-blue-500/10 text-blue-500 border-blue-500/20">
+                            OCR Enabled
+                          </Badge>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span className="truncate max-w-[200px]">{attachment.name}</span>
+                      </>
+                    )}
                   </div>
                   <Button 
                     variant="ghost" 

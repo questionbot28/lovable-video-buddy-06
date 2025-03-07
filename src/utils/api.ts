@@ -84,15 +84,37 @@ export const getVideoInfo = async (videoId: string): Promise<any> => {
 };
 
 import { AIModel } from "@/types/models";
+import { extractTextFromImage } from "./ocr";
 
 /**
  * Sends a message to the selected AI model API and returns the response
  */
-export const sendChatMessage = async (message: string, model: AIModel): Promise<string> => {
+export const sendChatMessage = async (
+  message: string, 
+  model: AIModel, 
+  attachment?: File | null
+): Promise<string> => {
   try {
     const url = "https://openrouter.ai/api/v1/chat/completions";
     
     console.log(`Sending message to ${model.name} (${model.modelId})`);
+    
+    let processedMessage = message;
+    
+    // If there's an image attachment and the model is Gemini, process it with OCR
+    if (attachment && attachment.type.startsWith('image/') && model.id === 'gemini') {
+      console.log("Image detected, processing with OCR before sending to Gemini");
+      try {
+        const extractedText = await extractTextFromImage(attachment);
+        
+        // Append the extracted text to the user's message
+        processedMessage = `${message}\n\nText extracted from the image:\n${extractedText}`;
+        console.log("Message enhanced with OCR text");
+      } catch (ocrError) {
+        console.error("Error during OCR processing:", ocrError);
+        // Continue with original message if OCR fails
+      }
+    }
     
     // Format the message as a proper chat instruction
     const formattedMessage = {
@@ -100,7 +122,7 @@ export const sendChatMessage = async (message: string, model: AIModel): Promise<
       messages: [
         {
           role: "user",
-          content: message
+          content: processedMessage
         }
       ],
       max_tokens: 500,
