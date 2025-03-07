@@ -123,7 +123,20 @@ export const sendChatMessage = async (message: string, model: AIModel): Promise<
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`API error (${response.status}):`, errorText);
-      throw new Error(`Failed to send message: ${response.status} - ${errorText}`);
+      let errorMessage = `Failed to send message: ${response.status}`;
+      
+      try {
+        // Try to parse error response for more details
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.error) {
+          errorMessage += ` - ${errorJson.error.message || errorJson.error}`;
+        }
+      } catch (e) {
+        // If error text isn't JSON, use as is
+        errorMessage += ` - ${errorText.substring(0, 100)}`;
+      }
+      
+      throw new Error(errorMessage);
     }
     
     const data = await response.json();
