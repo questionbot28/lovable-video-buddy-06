@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,8 @@ import { sendChatMessage } from "@/utils/api";
 import { toast } from "sonner";
 import { Send, PaperclipIcon, Sparkles, XCircle } from "lucide-react";
 import ChatMessage from "./ChatMessage";
+import ModelSelector from "./ModelSelector";
+import { AIModel, availableModels } from "@/types/models";
 
 interface ChatSectionProps {
   className?: string;
@@ -31,6 +34,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [attachment, setAttachment] = useState<File | null>(null);
+  const [selectedModel, setSelectedModel] = useState<AIModel>(availableModels[3]); // Default to Mistral
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
@@ -72,7 +76,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     setIsLoading(true);
     
     try {
-      const response = await sendChatMessage(input);
+      const response = await sendChatMessage(input, selectedModel);
       
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -118,6 +122,11 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     }
   };
 
+  const handleModelChange = (model: AIModel) => {
+    setSelectedModel(model);
+    toast.success(`Switched to ${model.name} model`);
+  };
+
   return (
     <div className={cn("space-y-6", className)}>
       <div className="space-y-2">
@@ -128,6 +137,10 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
         <p className="text-muted-foreground text-sm">
           Ask questions or discuss any topic with the AI assistant
         </p>
+      </div>
+      
+      <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+        <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} />
       </div>
       
       <Card className="overflow-hidden shadow-soft border border-primary/10 backdrop-blur-sm bg-card/90">
@@ -141,7 +154,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
                     Start a conversation by sending a message or ask for help with a specific topic
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center mt-4">
-                    {["How does Chota Got work?", "Tell me a joke", "What can you help me with?"].map((suggestion) => (
+                    {["How does Chota GPT work?", "Tell me a joke", "What can you help me with?"].map((suggestion) => (
                       <button
                         key={suggestion}
                         className="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-2 rounded-full text-sm transition-colors"

@@ -83,16 +83,18 @@ export const getVideoInfo = async (videoId: string): Promise<any> => {
   }
 };
 
+import { AIModel } from "@/types/models";
+
 /**
- * Sends a message to the OpenRouter API and returns the response
+ * Sends a message to the selected AI model API and returns the response
  */
-export const sendChatMessage = async (message: string): Promise<string> => {
+export const sendChatMessage = async (message: string, model: AIModel): Promise<string> => {
   try {
     const url = "https://openrouter.ai/api/v1/chat/completions";
     
     // Format the message as a proper chat instruction
     const formattedMessage = {
-      model: "mistralai/mistral-7b-instruct:free",
+      model: model.modelId,
       messages: [
         {
           role: "user",
@@ -106,7 +108,7 @@ export const sendChatMessage = async (message: string): Promise<string> => {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": `Bearer ${model.apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(formattedMessage)
