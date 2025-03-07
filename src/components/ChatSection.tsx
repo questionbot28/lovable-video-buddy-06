@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sendChatMessage } from "@/utils/api";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { Send } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 

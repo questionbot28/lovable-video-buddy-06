@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { extractVideoId, fetchYouTubeTranscript, getVideoInfo } from "@/utils/api";
 import TranscriptDisplay from "./TranscriptDisplay";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { Search } from "lucide-react";
 
 interface YouTubeSectionProps {
