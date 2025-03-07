@@ -103,13 +103,17 @@ export const sendChatMessage = async (
     
     // If there's an image attachment and the model is Gemini, process it with OCR
     if (attachment && attachment.type.startsWith('image/') && model.id === 'gemini') {
-      console.log("Image detected, processing with OCR before sending to Gemini");
+      console.log("Image detected, processing with enhanced OCR before sending to Gemini");
       try {
-        const extractedText = await extractTextFromImage(attachment);
+        // Use enhanced OCR with preprocessing enabled
+        const extractedText = await extractTextFromImage(attachment, {
+          language: 'eng', // Use English as default
+          preprocessing: true // Enable preprocessing for better results
+        });
         
         // Append the extracted text to the user's message
         processedMessage = `${message}\n\nText extracted from the image:\n${extractedText}`;
-        console.log("Message enhanced with OCR text");
+        console.log("Message enhanced with OCR text. Length:", extractedText.length);
       } catch (ocrError) {
         console.error("Error during OCR processing:", ocrError);
         // Continue with original message if OCR fails

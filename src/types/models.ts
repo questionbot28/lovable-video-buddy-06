@@ -11,7 +11,7 @@ export const availableModels: AIModel[] = [
   {
     id: "gemini",
     name: "Google Gemini",
-    description: "Process and analyze both text and images",
+    description: "Advanced model with enhanced OCR for image analysis",
     apiKey: "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",
     modelId: "google/gemini-pro"
   },
