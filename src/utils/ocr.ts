@@ -74,7 +74,7 @@ const fileToDataUrl = (file: File): Promise<string> => {
 
 /**
  * Preprocesses an image to improve OCR results
- * Applies basic image processing directly in the browser
+ * Applies enhanced image processing directly in the browser
  */
 const preprocessImage = async (dataUrl: string): Promise<string> => {
   return new Promise((resolve, reject) => {
