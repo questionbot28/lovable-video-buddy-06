@@ -6,7 +6,7 @@ import ParticleBackground from "@/components/ParticleBackground";
 
 const YouTube: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background dark">
       <ParticleBackground />
       <Header />
       
@@ -16,7 +16,7 @@ const YouTube: React.FC = () => {
       
       <footer className="py-4 px-4 border-t border-border/30 backdrop-blur-sm bg-background/20">
         <div className="container max-w-6xl mx-auto text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Chota GPT. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Chota GPT by Rohanpreet Singh Pathania. All rights reserved.</p>
         </div>
       </footer>
     </div>

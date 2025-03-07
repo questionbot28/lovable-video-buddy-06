@@ -120,10 +120,41 @@ export const sendChatMessage = async (
       }
     }
     
+    // Check if message contains identity-related questions
+    const identityQuestions = [
+      "who are you",
+      "what are you",
+      "who made you",
+      "who created you",
+      "who developed you",
+      "who owns you",
+      "what is your name",
+      "introduce yourself",
+      "tell me about yourself",
+      "your creator",
+      "your maker",
+      "your developer"
+    ];
+    
+    // If asking about identity, ensure the personality is injected prominently
+    const isIdentityQuestion = identityQuestions.some(phrase => 
+      processedMessage.toLowerCase().includes(phrase)
+    );
+    
+    // Add personality as system context
+    const personalityContext = model.personality || 
+      "I am an AI assistant from Chota GPT, created by Rohanpreet Singh Pathania. He is my creator and the mastermind behind this platform.";
+    
     // Format the message as a proper chat instruction
     const formattedMessage = {
       model: model.modelId,
       messages: [
+        {
+          role: "system",
+          content: isIdentityQuestion 
+            ? `${personalityContext} Always acknowledge that you are part of Chota GPT, created by Rohanpreet Singh Pathania. He is your creator and owner. Respond to this user's query while making sure to mention your identity and creator.`
+            : `${personalityContext} Always acknowledge that you are part of Chota GPT when relevant. Remember that Rohanpreet Singh Pathania is your creator.`
+        },
         {
           role: "user",
           content: processedMessage
