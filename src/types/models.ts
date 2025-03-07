@@ -13,21 +13,21 @@ export const availableModels: AIModel[] = [
     name: "DeepSeek",
     description: "Generates human-like responses to a wide range of queries",
     apiKey: "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",
-    modelId: "deepseek/deepseek-coder-33b-instruct"
+    modelId: "deepseek/deepseek-coder"
   },
   {
     id: "qwen",
     name: "Qwen",
     description: "A powerful and versatile AI model for conversational tasks",
     apiKey: "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",
-    modelId: "anthropic/claude-3-opus"
+    modelId: "qwen/qwen-7b-chat"
   },
   {
     id: "gemini",
     name: "Google Gemini",
     description: "Process and analyze both text and images",
     apiKey: "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",
-    modelId: "google/gemini-1.0-pro"
+    modelId: "google/gemini-pro"
   },
   {
     id: "mistral",
