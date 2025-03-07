@@ -10,11 +10,11 @@ const YouTube: React.FC = () => {
       <ParticleBackground />
       <Header />
       
-      <main className="flex-1 container max-w-6xl mx-auto px-4 pb-16">
-        <YouTubeSection className="animate-slide-up pt-6" />
+      <main className="flex-1 container max-w-6xl mx-auto px-4 pb-6 flex items-center">
+        <YouTubeSection className="animate-slide-up py-8 w-full" />
       </main>
       
-      <footer className="py-6 px-4 border-t border-border/30 backdrop-blur-sm bg-background/20">
+      <footer className="py-4 px-4 border-t border-border/30 backdrop-blur-sm bg-background/20">
         <div className="container max-w-6xl mx-auto text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Chota GPT. All rights reserved.</p>
         </div>

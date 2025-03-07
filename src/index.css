@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -54,6 +55,7 @@
     @apply bg-background text-foreground font-sans antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   /* Glass effect */
@@ -147,6 +149,21 @@
     animation: aurora 20s linear infinite;
   }
   
+  /* Typewriter cursor effect */
+  .cursor-blink {
+    display: inline-block;
+    width: 0.4em;
+    height: 1em;
+    background-color: currentColor;
+    margin-left: 0.1em;
+    animation: blink 1s step-end infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
   @keyframes aurora {
     0% {
       transform: rotate(0deg);
@@ -174,6 +191,18 @@
     100% { opacity: 0.6; }
   }
   
+  @keyframes slide-up {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Button glow effect */
   .btn-glow {
     position: relative;
     overflow: hidden;
@@ -205,14 +234,29 @@
     @apply neon-glow;
   }
   
-  /* Mobile optimizations */
+  /* Better mobile responsiveness */
   @media (max-width: 768px) {
     .container {
-      @apply px-4;
+      @apply px-2;
     }
+    
+    h1, h2 {
+      @apply text-xl md:text-2xl lg:text-3xl;
+    }
+    
+    .message-in {
+      @apply p-2;
+    }
+  }
+  
+  /* Ensure full-height layout */
+  html, body, #root {
+    height: 100%;
+    width: 100%;
   }
 }
 
+/* Keep existing animation keyframes */
 @keyframes loading {
   0% { content: "."; }
   33% { content: ".."; }
