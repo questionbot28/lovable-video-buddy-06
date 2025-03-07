@@ -26,11 +26,6 @@ export const fetchYouTubeTranscript = async (videoId: string): Promise<any> => {
   try {
     const url = "https://youtube-video-summarizer-gpt-ai.p.rapidapi.com/api/v1/get-transcript-v2";
     
-    const querystring = { 
-      video_id: videoId, 
-      platform: "youtube" 
-    };
-    
     const response = await fetch(`${url}?video_id=${videoId}&platform=youtube`, {
       method: "GET",
       headers: {
@@ -43,7 +38,27 @@ export const fetchYouTubeTranscript = async (videoId: string): Promise<any> => {
       throw new Error(`Failed to fetch transcript: ${response.status}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    
+    // Handle the RapidAPI response format
+    if (data && data.code === 100000 && data.data && data.data.transcripts) {
+      // Extract transcript from the response
+      const transcripts = data.data.transcripts;
+      const language = Object.keys(transcripts)[0]; // Get first available language
+      
+      if (language && transcripts[language] && transcripts[language].custom) {
+        // Combine all transcript segments
+        const transcriptText = transcripts[language].custom
+          .map((segment: any) => segment.text)
+          .join(" ");
+        
+        return { transcript: transcriptText };
+      }
+    }
+    
+    // If we couldn't extract a transcript in the expected format
+    return { transcript: null };
+    
   } catch (error) {
     console.error("Error fetching YouTube transcript:", error);
     throw error;
@@ -73,7 +88,20 @@ export const getVideoInfo = async (videoId: string): Promise<any> => {
  */
 export const sendChatMessage = async (message: string): Promise<string> => {
   try {
-    const url = "https://openrouter.ai/api/v1/completions";
+    const url = "https://openrouter.ai/api/v1/chat/completions";
+    
+    // Format the message as a proper chat instruction
+    const formattedMessage = {
+      model: "mistralai/mistral-7b-instruct:free",
+      messages: [
+        {
+          role: "user",
+          content: message
+        }
+      ],
+      max_tokens: 300,
+      temperature: 0.7
+    };
     
     const response = await fetch(url, {
       method: "POST",
@@ -81,12 +109,7 @@ export const sendChatMessage = async (message: string): Promise<string> => {
         "Authorization": "Bearer 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",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: "mistralai/mistral-7b-instruct:free",
-        prompt: message,
-        max_tokens: 300,
-        temperature: 0.7
-      })
+      body: JSON.stringify(formattedMessage)
     });
     
     if (!response.ok) {
@@ -94,8 +117,10 @@ export const sendChatMessage = async (message: string): Promise<string> => {
     }
     
     const data = await response.json();
-    return data.choices && data.choices[0] && data.choices[0].text
-      ? data.choices[0].text
+    
+    // Extract the response from the proper chat format
+    return data.choices && data.choices[0] && data.choices[0].message 
+      ? data.choices[0].message.content
       : "I'm sorry, I couldn't generate a response.";
   } catch (error) {
     console.error("Error sending chat message:", error);

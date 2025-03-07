@@ -48,7 +48,8 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({ className }) => {
         setTranscript(data.transcript);
         toast.success("Transcript extracted successfully");
       } else {
-        setTranscript("No transcript available for this video.");
+        setTranscript(null);
+        setError("No transcript available for this video. The video might not have captions enabled.");
         toast.warning("No transcript found");
       }
       
