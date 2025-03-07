@@ -1,31 +1,30 @@
-
 :root {
-  --background: 240 10% 3.9%;
+  --background: 0 0% 0%;
   --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
+  --card: 0 0% 7%;
   --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
+  --popover: 0 0% 7%;
   --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-  --secondary: 240 3.7% 15.9%;
+  --primary: 142 69% 58%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 15%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 15%;
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
-  --radius: 0.75rem;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 142 69% 58%;
+  --radius: 1.5rem;
 }
 
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
   color: hsl(var(--foreground));
 }
@@ -119,7 +118,6 @@ body {
   50% { opacity: 0.5; }
 }
 
-/* Enhancement styles for update messages */
 .update-message {
   background: linear-gradient(45deg, rgba(50, 50, 60, 0.8), rgba(30, 30, 40, 0.8));
   border-radius: var(--radius);
@@ -165,3 +163,145 @@ body {
   font-style: italic;
   color: rgba(255, 255, 255, 0.7);
 }
+
+.chatgpt-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+}
+
+.chatgpt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chatgpt-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.chatgpt-welcome {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: hsl(var(--foreground));
+}
+
+.chatgpt-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 650px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.suggestion-btn {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  padding: 0.75rem 1.25rem;
+  color: hsl(var(--foreground));
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-btn:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.chatgpt-footer {
+  padding: 1.5rem 1rem;
+  background-color: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chatgpt-input {
+  position: relative;
+  background-color: rgba(64, 65, 79, 0.9);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  color: hsl(var(--foreground));
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.chatgpt-input-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.chatgpt-input-tools-left, .chatgpt-input-tools-right {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.input-tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+  transition: background-color 0.2s ease;
+}
+
+.input-tool-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.input-tool-btn.primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.input-tool-btn.primary:hover {
+  opacity: 0.9;
+}
+
+.chatgpt-message-placeholder {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.color-green {
+  color: hsl(142 69% 58%);
+}
+
+.color-blue {
+  color: hsl(196 100% 73%);
+}
+
+.color-orange {
+  color: hsl(20 100% 70%);
+}
+
+.color-purple {
+  color: hsl(280 100% 70%);
+}
+
