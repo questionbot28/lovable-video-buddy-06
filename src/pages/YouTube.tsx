@@ -14,7 +14,7 @@ const YouTube: React.FC = () => {
         <YouTubeSection className="animate-slide-up py-8 w-full" />
       </main>
       
-      <footer className="py-4 px-4 border-t border-white/5 backdrop-blur-sm bg-black/30">
+      <footer className="py-4 px-4 border-t border-border/30 backdrop-blur-sm bg-background/20">
         <div className="container max-w-6xl mx-auto text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Chota GPT. All rights reserved.</p>
         </div>

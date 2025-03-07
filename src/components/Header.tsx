@@ -3,7 +3,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Youtube, MessageSquare, Home, Sparkles, PlusCircle } from "lucide-react";
+import { Youtube, MessageSquare, Home, Sparkles } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HeaderProps {
@@ -14,44 +14,40 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const isMobile = useIsMobile();
   
   return (
-    <header className={cn("w-full py-6 px-4 md:px-8 border-b border-white/5 backdrop-blur-sm bg-black/50 sticky top-0 z-50", className)}>
+    <header className={cn("w-full py-6 px-4 md:px-8 border-b border-blue-500/20 backdrop-blur-sm glass sticky top-0 z-50", className)}>
       <div className="container max-w-6xl mx-auto">
         <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
           <div className="flex flex-col items-center sm:items-start">
             <h1 className="text-3xl font-bold tracking-tight animate-fade-in neon-text flex items-center gap-2">
-              <Sparkles className="h-6 w-6 color-green animate-pulse" />
+              <Sparkles className="h-6 w-6 text-blue-400 animate-pulse" />
               Chota GPT
             </h1>
             <p className="text-muted-foreground text-sm animate-slide-up">
-              Your AI assistant for chat, analysis, and more
+              Extract insights from YouTube videos and chat with AI
             </p>
           </div>
           
           <nav className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto justify-center sm:justify-end">
             <Button variant="ghost" asChild size={isMobile ? "sm" : "default"} 
-              className="hover:bg-green-500/10 hover:text-green-400 border border-white/5 hover:border-green-500/20">
+              className="hover:bg-blue-500/10 hover:text-blue-400 neon-border hover:neon-glow">
               <Link to="/">
                 <Home className="h-4 w-4 mr-2" />
                 Home
               </Link>
             </Button>
             <Button variant="ghost" asChild size={isMobile ? "sm" : "default"}
-              className="hover:bg-green-500/10 hover:text-green-400 border border-white/5 hover:border-green-500/20">
+              className="hover:bg-blue-500/10 hover:text-blue-400 neon-border hover:neon-glow">
               <Link to="/youtube">
                 <Youtube className="h-4 w-4 mr-2" />
                 YouTube
               </Link>
             </Button>
             <Button variant="ghost" asChild size={isMobile ? "sm" : "default"}
-              className="hover:bg-green-500/10 hover:text-green-400 border border-white/5 hover:border-green-500/20">
+              className="hover:bg-blue-500/10 hover:text-blue-400 neon-border hover:neon-glow">
               <Link to="/chat">
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Chat
               </Link>
-            </Button>
-            <Button variant="outline" className="bg-secondary rounded-full flex items-center gap-2 px-4 ml-2">
-              <span>Get Plus</span>
-              <PlusCircle className="h-4 w-4" />
             </Button>
           </nav>
         </div>
