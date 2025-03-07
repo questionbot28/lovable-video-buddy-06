@@ -4,25 +4,29 @@ import Header from "@/components/Header";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Youtube, MessageSquare } from "lucide-react";
+import { Youtube, MessageSquare, Sparkles } from "lucide-react";
 
 const Index: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <div className="animated-bg"></div>
       <Header />
       
       <main className="flex-1 container max-w-6xl mx-auto px-4 pb-16">
         <div className="py-12 text-center">
-          <h2 className="text-3xl font-bold tracking-tight mb-2">Welcome to Media Insight</h2>
+          <h2 className="text-4xl font-bold tracking-tight mb-2 neon-text flex items-center justify-center gap-2">
+            <Sparkles className="h-8 w-8 text-secondary animate-pulse" />
+            Welcome to Chota Got
+          </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             Explore YouTube transcripts and chat with AI - all in one place
           </p>
           
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-12">
-            <Card className="shadow-soft hover:shadow-md transition-shadow duration-300">
+            <Card className="shadow-soft hover:neon-glow transition-all duration-300 neon-border bg-card">
               <CardHeader>
-                <Youtube className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>YouTube Transcript</CardTitle>
+                <Youtube className="h-8 w-8 text-secondary mb-2" />
+                <CardTitle className="neon-text">YouTube Transcript</CardTitle>
                 <CardDescription>
                   Extract and analyze transcripts from any YouTube video
                 </CardDescription>
@@ -34,7 +38,7 @@ const Index: React.FC = () => {
                 </p>
               </CardContent>
               <CardFooter>
-                <Button asChild className="w-full">
+                <Button asChild className="w-full btn-glow">
                   <Link to="/youtube">
                     <Youtube className="h-4 w-4 mr-2" />
                     Open YouTube Transcript
@@ -43,10 +47,10 @@ const Index: React.FC = () => {
               </CardFooter>
             </Card>
             
-            <Card className="shadow-soft hover:shadow-md transition-shadow duration-300">
+            <Card className="shadow-soft hover:neon-glow transition-all duration-300 neon-border bg-card">
               <CardHeader>
-                <MessageSquare className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>AI Chat Assistant</CardTitle>
+                <MessageSquare className="h-8 w-8 text-secondary mb-2" />
+                <CardTitle className="neon-text">AI Chat Assistant</CardTitle>
                 <CardDescription>
                   Have a conversation with our AI assistant
                 </CardDescription>
@@ -58,7 +62,7 @@ const Index: React.FC = () => {
                 </p>
               </CardContent>
               <CardFooter>
-                <Button asChild className="w-full">
+                <Button asChild className="w-full btn-glow">
                   <Link to="/chat">
                     <MessageSquare className="h-4 w-4 mr-2" />
                     Open Chat Assistant
@@ -70,9 +74,9 @@ const Index: React.FC = () => {
         </div>
       </main>
       
-      <footer className="py-6 px-4 border-t">
+      <footer className="py-6 px-4 border-t border-border/50">
         <div className="container max-w-6xl mx-auto text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Media Insight. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Chota Got. All rights reserved.</p>
         </div>
       </footer>
     </div>

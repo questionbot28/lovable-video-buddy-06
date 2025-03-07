@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { extractVideoId, fetchYouTubeTranscript, getVideoInfo } from "@/utils/api";
 import TranscriptDisplay from "./TranscriptDisplay";
 import { toast } from "sonner";
-import { Search } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface YouTubeSectionProps {
   className?: string;
@@ -21,6 +22,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({ className }) => {
   const [transcript, setTranscript] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,30 +66,34 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({ className }) => {
 
   return (
     <div className={cn("space-y-6", className)}>
+      <div className="animated-bg"></div>
       <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="animate-fade-in">YouTube</Badge>
-          <h2 className="text-2xl font-medium tracking-tight">Video Summarizer</h2>
+        <div className="flex items-center gap-2 justify-center sm:justify-start">
+          <Badge variant="outline" className="animate-fade-in neon-border">YouTube</Badge>
+          <h2 className="text-2xl font-bold tracking-tight neon-text flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
+            Video Summarizer
+          </h2>
         </div>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-sm text-center sm:text-left">
           Enter a YouTube URL to extract and display the video transcript
         </p>
       </div>
       
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-grow">
           <Input
             type="text"
             placeholder="Paste YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="pr-10 focus-ring"
+            className="pr-10 focus-ring neon-border bg-muted/30"
           />
         </div>
         <Button 
           type="submit" 
           disabled={isLoading || !url}
-          className="transition-all duration-200 hover:shadow-md"
+          className="transition-all duration-200 btn-glow"
         >
           {isLoading ? 
             "Processing..." : 
@@ -97,7 +103,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({ className }) => {
       </form>
       
       {videoId && videoInfo && (
-        <Card className="overflow-hidden animate-fade-in yt-section">
+        <Card className="overflow-hidden animate-fade-in yt-section neon-border">
           <CardContent className="p-0">
             <div className="aspect-video w-full overflow-hidden">
               <iframe
