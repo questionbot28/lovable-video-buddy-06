@@ -92,6 +92,8 @@ export const sendChatMessage = async (message: string, model: AIModel): Promise<
   try {
     const url = "https://openrouter.ai/api/v1/chat/completions";
     
+    console.log(`Sending message to ${model.name} (${model.modelId})`);
+    
     // Format the message as a proper chat instruction
     const formattedMessage = {
       model: model.modelId,
@@ -101,29 +103,39 @@ export const sendChatMessage = async (message: string, model: AIModel): Promise<
           content: message
         }
       ],
-      max_tokens: 300,
+      max_tokens: 500,
       temperature: 0.7
     };
+    
+    console.log("Request payload:", JSON.stringify(formattedMessage));
     
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${model.apiKey}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "HTTP-Referer": window.location.origin,
+        "X-Title": "Chota GPT"
       },
       body: JSON.stringify(formattedMessage)
     });
     
     if (!response.ok) {
-      throw new Error(`Failed to send message: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`API error (${response.status}):`, errorText);
+      throw new Error(`Failed to send message: ${response.status} - ${errorText}`);
     }
     
     const data = await response.json();
+    console.log("API response:", data);
     
     // Extract the response from the proper chat format
-    return data.choices && data.choices[0] && data.choices[0].message 
-      ? data.choices[0].message.content
-      : "I'm sorry, I couldn't generate a response.";
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      return data.choices[0].message.content;
+    } else {
+      console.error("Unexpected API response structure:", data);
+      return "I'm sorry, I couldn't generate a response. The API returned an unexpected format.";
+    }
   } catch (error) {
     console.error("Error sending chat message:", error);
     throw error;

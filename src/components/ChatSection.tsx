@@ -76,6 +76,9 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     setIsLoading(true);
     
     try {
+      // Log the model being used
+      console.log(`Using model: ${selectedModel.name} (${selectedModel.id})`);
+      
       const response = await sendChatMessage(input, selectedModel);
       
       const aiMessage: Message = {
@@ -92,7 +95,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
       
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I'm having trouble responding right now. Please try again later.",
+        content: "I'm having trouble connecting to the AI service. This could be due to an API limit or connection issue. Please try again later or select a different model.",
         role: "assistant",
         timestamp: new Date()
       };
