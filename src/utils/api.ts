@@ -20,13 +20,24 @@ export const extractVideoId = (url: string): string | null => {
 };
 
 /**
- * Fetches the transcript for a YouTube video
+ * Fetches the transcript for a YouTube video using the RapidAPI endpoint
  */
 export const fetchYouTubeTranscript = async (videoId: string): Promise<any> => {
   try {
-    // This is a placeholder for the actual API call
-    // In a real application, you would replace this with your actual API endpoint
-    const response = await fetch(`https://api.example.com/youtube/transcript?videoId=${videoId}`);
+    const url = "https://youtube-video-summarizer-gpt-ai.p.rapidapi.com/api/v1/get-transcript-v2";
+    
+    const querystring = { 
+      video_id: videoId, 
+      platform: "youtube" 
+    };
+    
+    const response = await fetch(`${url}?video_id=${videoId}&platform=youtube`, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": "f12a24bbfamsh2ed8a5f6d386a88p121a3djsn480d5e99e5bf",
+        "x-rapidapi-host": "youtube-video-summarizer-gpt-ai.p.rapidapi.com"
+      }
+    });
     
     if (!response.ok) {
       throw new Error(`Failed to fetch transcript: ${response.status}`);
@@ -62,23 +73,19 @@ export const getVideoInfo = async (videoId: string): Promise<any> => {
  */
 export const sendChatMessage = async (message: string): Promise<string> => {
   try {
-    // This is a placeholder for the actual API call
-    // In a real application, you would replace this with your OpenRouter API endpoint
-    const response = await fetch("https://api.openrouter.ai/api/v1/chat/completions", {
+    const url = "https://openrouter.ai/api/v1/completions";
+    
+    const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        // Add your API key here or use environment variables
-        // "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: "mistralai/mistral-7b-instruct:free",
-        messages: [
-          {
-            role: "user",
-            content: message
-          }
-        ]
+        prompt: message,
+        max_tokens: 300,
+        temperature: 0.7
       })
     });
     
@@ -87,7 +94,9 @@ export const sendChatMessage = async (message: string): Promise<string> => {
     }
     
     const data = await response.json();
-    return data.choices[0].message.content;
+    return data.choices && data.choices[0] && data.choices[0].text
+      ? data.choices[0].text
+      : "I'm sorry, I couldn't generate a response.";
   } catch (error) {
     console.error("Error sending chat message:", error);
     throw error;

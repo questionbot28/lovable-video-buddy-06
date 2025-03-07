@@ -56,13 +56,13 @@ const ChatSection: React.FC<ChatSectionProps> = ({ className }) => {
     setIsLoading(true);
     
     try {
-      // Send message to API
+      // Send message to OpenRouter API
       const response = await sendChatMessage(input);
       
       // Add AI response
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: response,
+        content: response.trim(),
         role: "assistant",
         timestamp: new Date()
       };

@@ -41,11 +41,17 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({ className }) => {
       const info = await getVideoInfo(extractedId);
       setVideoInfo(info);
       
-      // Get transcript
+      // Get transcript using the RapidAPI endpoint
       const data = await fetchYouTubeTranscript(extractedId);
-      setTranscript(data.transcript || "No transcript available for this video.");
       
-      toast.success("Transcript extracted successfully");
+      if (data && data.transcript) {
+        setTranscript(data.transcript);
+        toast.success("Transcript extracted successfully");
+      } else {
+        setTranscript("No transcript available for this video.");
+        toast.warning("No transcript found");
+      }
+      
     } catch (err) {
       console.error("Error:", err);
       setError("Failed to fetch transcript. Please try another video.");
